@@ -15,7 +15,15 @@
                 const verison = data.version.name;
                 const player_count = data.players.online;
                 const max_players = data.players.max;
-                const description = data.description;
+                let description = data.description;
+                // TODO: keep the colours
+                if (typeof description === "object") {
+                    let old_description = description;
+                    description = old_description.text;
+                    for (let i = 0; i < old_description.extra.length; i++) {
+                        description += old_description.extra[i].text;
+                    }
+                }
                 // Parse the MC colour codes in the description
                 const description_html = description.replace(/§([0-9]|[a-f]|[k-o]|[r])/g, "<span class='mc-color-$1'>").replace(/§r/g, "</span>");
                 const favicon = data.favicon;
