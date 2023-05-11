@@ -20,8 +20,10 @@
                 if (typeof description === "object") {
                     let old_description = description;
                     description = old_description.text;
-                    for (let i = 0; i < old_description.extra.length; i++) {
-                        description += old_description.extra[i].text;
+                    if (old_description.extra) {
+                        for (let i = 0; i < old_description.extra.length; i++) {
+                            description += old_description.extra[i].text;
+                        }
                     }
                 }
                 // Parse the MC colour codes in the description
