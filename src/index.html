@@ -1,152 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minecraft Status on Cloudflare Pages</title>
     <script>
-        function check() {
-            var ip = document.getElementById("ip").value;
-            var status = document.getElementById("status");
-            status.innerHTML = "Checking...";
-            fetch("/status?ip=" + ip).then(response => response.json()).then(data => {
-                const verison = data.version.name;
-                const player_count = data.players.online;
-                const max_players = data.players.max;
-                let description = data.description;
-                // TODO: keep the colours
-                if (typeof description === "object") {
-                    let old_description = description;
-                    description = old_description.text;
-                    if (old_description.extra) {
-                        for (let i = 0; i < old_description.extra.length; i++) {
-                            description += old_description.extra[i].text;
-                        }
-                    }
+      function example(ip) {
+        document.getElementById("ip").value = ip;
+        check();
+      }
+
+      function check() {
+        var ip = document.getElementById("ip").value;
+        var status = document.getElementById("status");
+        status.innerHTML = "Checking...";
+        fetch("/status?ip=" + ip)
+          .then((response) => response.json())
+          .then((data) => {
+            const verison = data.version.name;
+            const player_count = data.players.online;
+            const max_players = data.players.max;
+            let description = data.description;
+            // TODO: keep the colours
+            if (typeof description === "object") {
+              let old_description = description;
+              description = old_description.text;
+              if (old_description.extra) {
+                for (let i = 0; i < old_description.extra.length; i++) {
+                  description += old_description.extra[i].text;
                 }
-                // Parse the MC colour codes in the description
-                const description_html = description.replace(/§([0-9]|[a-f]|[k-o]|[r])/g, "<span class='mc-color-$1'>").replace(/§r/g, "</span>");
-                const favicon = data.favicon;
-                // The favicon on the left, everything else on the right, right next to it.
-                status.innerHTML = `<img src="${favicon}" width="64" height="64" style="float: left; margin-right: 10px;"> <span style="float: left;">${description_html}<br><span class="mc-color-0">Version: ${verison}<br>Players: ${player_count}/${max_players}</span></span>`;
-            }).catch(error => {
-                status.innerHTML = "Error ):";
-            });
-        }
-        document.getElementById("ip").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                check();
+              }
             }
-        });
+            // Parse the MC colour codes in the description
+            const description_html = description
+              .replace(
+                /§([0-9]|[a-f]|[k-o]|[r])/g,
+                "<span class='mc-color-$1'>"
+              )
+              .replace(/§r/g, "</span>");
+            const favicon = data.favicon;
+            // The favicon on the left, everything else on the right, right next to it.
+            status.innerHTML = `<img src="${favicon}" width="64" height="64" style="float: left; margin-right: 10px;"> <span style="float: left;">${description_html}<br><span class="mc-color-0">Version: ${verison}<br>Players: ${player_count}/${max_players}</span></span>`;
+          })
+          .catch((error) => {
+            status.innerHTML = "Error ):";
+          });
+      }
+      document.getElementById("ip").addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          check();
+        }
+      });
     </script>
 
     <style>
-        body {
-            font-family: sans-serif;
-        }
-        
-        .mc-color-0 {
-            color: #000000;
-        }
-        
-        .mc-color-1 {
-            color: #0000AA;
-        }
-        
-        .mc-color-2 {
-            color: #00AA00;
-        }
-        
-        .mc-color-3 {
-            color: #00AAAA;
-        }
-        
-        .mc-color-4 {
-            color: #AA0000;
-        }
-        
-        .mc-color-5 {
-            color: #AA00AA;
-        }
-        
-        .mc-color-6 {
-            color: #FFAA00;
-        }
-        
-        .mc-color-7 {
-            color: #AAAAAA;
-        }
-        
-        .mc-color-8 {
-            color: #555555;
-        }
-        
-        .mc-color-9 {
-            color: #5555FF;
-        }
-        
-        .mc-color-a {
-            color: #55FF55;
-        }
-        
-        .mc-color-b {
-            color: #55FFFF;
-        }
-        
-        .mc-color-c {
-            color: #FF5555;
-        }
-        
-        .mc-color-d {
-            color: #FF55FF;
-        }
-        
-        .mc-color-e {
-            color: #FFFF55;
-        }
-        
-        .mc-color-f {
-            color: #FFFFFF;
-        }
-        
-        .mc-color-k {
-            animation: mc-color-k 1s infinite;
-        }
-        
-        .mc-color-l {
-            font-weight: bold;
-        }
-        
-        .mc-color-m {
-            text-decoration: line-through;
-        }
-        
-        .mc-color-n {
-            text-decoration: underline;
-        }
-        
-        .mc-color-o {
-            font-style: italic;
-        }
-        
-        .mc-color-r {
-            color: #FFFFFF;
-            text-decoration: none;
-            font-style: normal;
-            font-weight: normal;
-            animation: none;
-        }
-    </style>
-</head>
+      body {
+        font-family: sans-serif;
+      }
 
-<body>
+      .mc-color-0 {
+        color: #000000;
+      }
+
+      .mc-color-1 {
+        color: #0000aa;
+      }
+
+      .mc-color-2 {
+        color: #00aa00;
+      }
+
+      .mc-color-3 {
+        color: #00aaaa;
+      }
+
+      .mc-color-4 {
+        color: #aa0000;
+      }
+
+      .mc-color-5 {
+        color: #aa00aa;
+      }
+
+      .mc-color-6 {
+        color: #ffaa00;
+      }
+
+      .mc-color-7 {
+        color: #aaaaaa;
+      }
+
+      .mc-color-8 {
+        color: #555555;
+      }
+
+      .mc-color-9 {
+        color: #5555ff;
+      }
+
+      .mc-color-a {
+        color: #55ff55;
+      }
+
+      .mc-color-b {
+        color: #55ffff;
+      }
+
+      .mc-color-c {
+        color: #ff5555;
+      }
+
+      .mc-color-d {
+        color: #ff55ff;
+      }
+
+      .mc-color-e {
+        color: #ffff55;
+      }
+
+      .mc-color-f {
+        color: #ffffff;
+      }
+
+      .mc-color-k {
+        animation: mc-color-k 1s infinite;
+      }
+
+      .mc-color-l {
+        font-weight: bold;
+      }
+
+      .mc-color-m {
+        text-decoration: line-through;
+      }
+
+      .mc-color-n {
+        text-decoration: underline;
+      }
+
+      .mc-color-o {
+        font-style: italic;
+      }
+
+      .mc-color-r {
+        color: #ffffff;
+        text-decoration: none;
+        font-style: normal;
+        font-weight: normal;
+        animation: none;
+      }
+    </style>
+  </head>
+
+  <body>
     <h1>Minecraft Status on Cloudflare Pages</h1>
-    <input type="text" id="ip" placeholder="play.example.com[:port]">
+    <p>
+      Enter a server IP (optionally with port) below, or
+      <button onclick="example('play.hypixel.net')">try</button>
+      <button onclick="example('play.roleplayhub.net')">one</button>
+      <button onclick="example('play.wynncraft.com')">of</button>
+      <button onclick="example('play.cubecraft.net')">the</button>
+      <button onclick="example('play.havoc.games')">examples!</button>
+      <br />
+      <a href="https://github.com/zegevlier/mcping" target="_blank"
+        >Github link</a
+      >
+    </p>
+    <input type="text" id="ip" placeholder="play.example.com[:port]" />
     <button onclick="check()">Check</button>
     <p id="status"></p>
-</body>
-
+  </body>
 </html>
