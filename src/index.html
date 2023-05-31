@@ -7,6 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minecraft Status on Cloudflare Pages</title>
     <script>
+        let lightMode = localStorage.getItem("light-mode") === "true";
+        if (lightMode) {
+            // wait until the page is loaded to avoid the flash of dark mode
+            window.addEventListener("load", () => {
+                document.body.classList.add("light-mode");
+                document.getElementById("toggleTheme").checked = true;
+            });
+        }
+
+        function toggleTheme() {
+            if (lightMode) {
+                document.body.classList.remove("light-mode");
+                localStorage.setItem("light-mode", "false");
+                lightMode = false;
+            } else {
+                document.body.classList.add("light-mode");
+                localStorage.setItem("light-mode", "true");
+                lightMode = true;
+            }
+        }
+
         function example(ip) {
             document.getElementById("ip").value = ip;
             check();
@@ -42,17 +63,20 @@
                         .replace(/§r/g, "</span>");
                     const favicon = data.favicon;
                     // The favicon on the left, everything else on the right, right next to it.
-                    status.innerHTML = `<img src="${favicon}" width="64" height="64" style="float: left; margin-right: 10px;"> <span style="float: left;">${description_html}<br><span class="mc-color-f">Version: ${verison}<br>Players: ${player_count}/${max_players}</span></span>`;
+                    status.innerHTML = `<img src="${favicon}" width="64" height="64" style="float: left; margin-right: 10px;"> <span style="float: left;">${description_html}<br><span class="mc-color-${lightMode ? "f" : "0"}">Version: ${verison}<br>Players: ${player_count}/${max_players}</span></span>`;
                 })
                 .catch((error) => {
                     status.innerHTML = "Error ):";
                 });
         }
-        document.getElementById("ip").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                check();
-            }
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("ip").addEventListener("keyup", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    check();
+                }
+            });
+            document.getElementById("ip").focus();
         });
     </script>
 
@@ -60,11 +84,32 @@
         * {
             margin: 0;
             padding: 0;
+            --darkest-bg: #23272a;
+            --dark-bg: #2c2f33;
+            --dark-txt: #ffeeff;
+            --lightest-bg: #f4faf4;
+            --light-bg: #fefffe;
+            --light-txt: #020302;
+            --accent: #aaffaa;
+            --bar: #2f3337;
+        }
+        
+        .light-mode>*,
+        .light-mode,
+        .light-mode * {
+            --lightest-bg: #23272a;
+            --light-bg: #2c2f33;
+            --light-txt: #ffeeff;
+            --darkest-bg: #f4faf4;
+            --dark-bg: #fefffe;
+            --dark-txt: #020302;
+            --accent: #395739;
+            --bar: #fffeff;
         }
         
         body {
-            background-color: #23272a;
-            color: #ffffff;
+            background-color: var(--darkest-bg);
+            color: var(--dark-txt);
             font-family: sans-serif;
             display: flex;
             flex-direction: row;
@@ -73,7 +118,7 @@
         
         button {
             background-color: transparent;
-            color: #ffffff;
+            color: var(--dark-txt);
             font-size: 20px;
             outline: none;
             border: none;
@@ -87,13 +132,13 @@
         
         @keyframes onHover {
             0% {
-                color: #ffffff;
+                color: var(--dark-txt);
             }
             50% {
-                color: #aaffaa;
+                color: var(--accent);
             }
             100% {
-                color: #ffffff;
+                color: var(--dark-txt);
             }
         }
         
@@ -103,8 +148,9 @@
         }
         
         .right {
-            background-color: #2c2f33;
-            color: #ffffff;
+            background-color: var(--dark-bg);
+            /*#2c2f33;*/
+            color: var(--dark-txt);
             border-radius: 5px;
             width: 65vw;
         }
@@ -117,11 +163,11 @@
             margin: 20px;
         }
         
-        input {
+        input[type=text] {
             padding: 25px;
             width: 80%;
             background-color: transparent;
-            color: #aaffaa;
+            color: var(--accent);
             border: none;
             flex-grow: 2;
             outline: none;
@@ -129,7 +175,7 @@
         }
         
         .bar {
-            background-color: #2f3337;
+            background-color: var(--bar);
             width: 65vw;
             display: flex;
             flex-direction: row;
@@ -137,17 +183,17 @@
         }
         
         .bar:focus-within {
-            border-bottom: 1px solid #aaffaa;
+            border-bottom: 1px solid var(--accent);
         }
         
         a {
             text-decoration: none;
-            color: #ffffff;
+            color: var(--dark-txt);
         }
         
         a:hover {
             cursor: pointer;
-            color: #aaffaa;
+            color: var(--accent);
         }
         
         a:visited {
@@ -249,26 +295,28 @@
     </style>
 </head>
 
-<body>
+<body class="">
     <div class="left">
-        <h1>Minecraft Server Status</h1>
-        <h4>on Cloudflare Pages</h4>
-        <br>
-        <br>
-        <br>
+        <div>
+            <h1>Minecraft Server Status</h1>
+            <h4>on Cloudflare Pages</h4>
+        </div>
+        <br><br><br>
         <a href="https://github.com/zegevlier/mcping" target="_blank" class=".hover-underline-animation">Check this out on Github</a>
-        <br>
-        <br>
-        <br>
-        <h5> Example servers: </h5>
-        <ul>
-            <li><a onclick="example('play.hypixel.net')">Hypixel</a></li>
-            <li><a onclick="example('play.hobbnetwork.me')">The Hobb Network</a></li>
-            <li><a onclick="example('play.roleplayhub.net')">Roleplay Hub</a></li>
-            <li><a onclick="example('play.wynncraft.com')">Wynncraft</a></li>
-            <li><a onclick="example('play.cubecraft.net')">Cubecraft</a></li>
-            <li><a onclick="example('play.havoc.games')">HavocMC</a></li>
-        </ul>
+        <br><br><br>
+        <div>
+            <h5> Example servers: </h5>
+            <ul>
+                <li><a onclick="example('play.hypixel.net')">Hypixel</a></li>
+                <li><a onclick="example('play.hobbnetwork.me')">The Hobb Network</a></li>
+                <li><a onclick="example('play.roleplayhub.net')">Roleplay Hub</a></li>
+                <li><a onclick="example('play.wynncraft.com')">Wynncraft</a></li>
+                <li><a onclick="example('play.cubecraft.net')">Cubecraft</a></li>
+                <li><a onclick="example('play.havoc.games')">HavocMC</a></li>
+            </ul>
+        </div>
+        <br><br><br>
+        <div><input type="checkbox" onclick="toggleTheme()" id="toggleTheme" class=".hover-underline-animation"> Enable light mode</div>
     </div>
     <div class="right">
         <div class="bar">
@@ -277,7 +325,6 @@
         </div>
         <p id="status" class="center"></p>
     </div>
-
 </body>
 
 </html>
