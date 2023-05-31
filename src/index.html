@@ -6,6 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minecraft Status on Cloudflare Pages</title>
   <script>
+    function toggleTheme() {
+      document.querySelectorAll('*').forEach((element) => {
+        if(element.classList.contains('bad-mode')) {
+          element.classList.remove('bad-mode');
+        } else {
+          element.classList.add('bad-mode');
+        }
+      });
+    }
+
     function example(ip) {
       document.getElementById("ip").value = ip;
       check();
@@ -59,10 +69,28 @@
     * {
       margin: 0;
       padding: 0;
+      --darkest-bg: #23272a;
+      --dark-bg: #2c2f33;
+      --dark-txt: #ffeeff;
+      --lightest-bg: #f4faf4;
+      --light-bg: #fefffe;
+      --light-txt: #020302;
+      --accent: #aaffaa;
+      --bar: #2f3337;
+    }
+    .bad-mode {
+      --lightest-bg: #23272a;
+      --light-bg: #2c2f33;
+      --light-txt: #ffeeff;
+      --darkest-bg: #f4faf4;
+      --dark-bg: #fefffe;
+      --dark-txt: #020302;
+      --accent: #395739;
+      --bar: #fffeff;
     }
     body {
-      background-color: #23272a;
-      color: #ffffff;
+      background-color: var(--darkest-bg);
+      color: var(--dark-txt);
       font-family: sans-serif;
       display: flex;
       flex-direction: row;
@@ -70,7 +98,7 @@
     }
     button {
       background-color: transparent;
-      color: #ffffff;
+      color: var(--dark-txt);
       font-size: 20px;
       outline: none;
       border: none;
@@ -81,17 +109,17 @@
       animation: onHover 5s linear 0s infinite normal;
     }
     @keyframes onHover {
-      0% {color: #ffffff;}
-      50% {color: #aaffaa;}
-      100% {color: #ffffff;}
+      0% {color: var(--dark-txt);}
+      50% {color: var(--accent);}
+      100% {color: var(--dark-txt);}
     }
     .left {
       width: 35vw;
       padding: 40px;
     }
     .right {
-      background-color: #2c2f33;
-      color: #ffffff;
+      background-color: var(--dark-bg); /*#2c2f33;*/
+      color: var(--dark-txt);
       border-radius: 5px;
       width: 65vw;
     }
@@ -101,37 +129,40 @@
     #status {
       margin: 20px;
     }
-    input {
+    input[type=text] {
       padding: 25px;
       width: 80%;
       background-color: transparent;
-      color: #aaffaa;
+      color: var(--accent);
       border: none;
       flex-grow: 2;
       outline: none;
+      font-size: 20px;
     }
     .bar {
-      background-color: #2f3337;
+      background-color: var(--bar);
       width: 65vw;
       display: flex;
       flex-direction: row;
       border-bottom: 2px solid #222222;
     }
     .bar:focus-within {
-      border-bottom: 1px solid #aaffaa;
+      border-bottom: 1px solid var(--accent);
     }
     a {
       text-decoration: none;
-      color: #ffffff;
+      color: var(--dark-txt);
     }
     a:hover {
       cursor: pointer;
-      color: #aaffaa;
+      color: var(--accent);
     }
     a:visited {
       cursor: pointer;
       color: #115511;
     }
+
+
 
     .mc-color-0 {
       color: #000000;
@@ -227,34 +258,35 @@
   </style>
 </head>
 
-<body>
-<div class="left">
-  <h1>Minecraft Server Status</h1>
-  <h4>on Cloudflare Pages</h4>
-  <br>
-  <br>
-  <br>
-  <a href="https://github.com/zegevlier/mcping" target="_blank" class=".hover-underline-animation">Check out my Github</a>
-  <br>
-  <br>
-  <br>
-  <h5> Example servers: </h5>
-  <ul>
-    <li><a onclick="example('play.hypixel.net')">Hypixel</a></li>
-    <li><a onclick="example('play.hobbnetwork.me')">The Hobb Network</a></li>
-    <li><a onclick="example('play.roleplayhub.net')">Roleplay Hub</a></li>
-    <li><a onclick="example('play.wynncraft.com')">Wynncraft</a></li>
-    <li><a onclick="example('play.cubecraft.net')">Cubecraft</a></li>
-    <li><a onclick="example('play.havoc.games')">HavocMC</a></li>
-  </ul>
-</div>
-<div class="right">
-  <div class="bar">
-    <input type="text" id="ip" placeholder="play.example.com[:port]" />
-    <button onclick="check()" class=".hover-underline-animation">Check</button>
+<body class="">
+  <div class="left">
+    <div>
+      <h1>Minecraft Server Status</h1>
+      <h4>on Cloudflare Pages</h4>
+    </div>
+    <br><br><br>
+    <a href="https://github.com/zegevlier/mcping" target="_blank" class=".hover-underline-animation">Check this out on Github</a>
+    <br><br><br>
+    <div>
+      <h5> Example servers: </h5>
+      <ul>
+        <li><a onclick="example('play.hypixel.net')">Hypixel</a></li>
+        <li><a onclick="example('play.hobbnetwork.me')">The Hobb Network</a></li>
+        <li><a onclick="example('play.roleplayhub.net')">Roleplay Hub</a></li>
+        <li><a onclick="example('play.wynncraft.com')">Wynncraft</a></li>
+        <li><a onclick="example('play.cubecraft.net')">Cubecraft</a></li>
+        <li><a onclick="example('play.havoc.games')">HavocMC</a></li>
+      </ul>
+    </div>
+    <br><br><br>
+    <div><input type="checkbox" onclick="toggleTheme()" class=".hover-underline-animation"> Enable light mode - to attract bugs</div>
   </div>
-  <p id="status" class="center"></p>
-</div>
-
+  <div class="right">
+    <div class="bar">
+      <input type="text" id="ip" placeholder="play.example.com[:port]" />
+      <button onclick="check()" class=".hover-underline-animation">Check</button>
+    </div>
+    <p id="status" class="center"></p>
+  </div>
 </body>
 </html>
