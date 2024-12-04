@@ -13,6 +13,12 @@
             window.addEventListener("load", () => {
                 document.body.classList.add("light-mode");
                 document.getElementById("toggleTheme").checked = true;
+                const params = new URLSearchParams(window.location.search);
+                const urlParam = params.get("url");
+
+                if (urlParam) {
+                    example(urlParam);
+                }
             });
         }
 
